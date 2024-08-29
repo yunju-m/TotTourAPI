@@ -20,18 +20,10 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="/WEB-INF/conf/mybatis-config.xml"/>
     </bean>
-    
-    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-    	<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
 
     <!-- MapperScannerConfigurer -->
-   <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     	<property name="location" value="classpath:/WEB-INF/props/db.properties" />
-	</bean>
-	
-	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    	<property name="basePackage" value="totapi.dao"/>
 	</bean>
     
 
