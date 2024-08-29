@@ -4,8 +4,12 @@
     
     <properties resource="props/db.properties" />
     
+    <settings>
+        <setting name="jdbcTypeForNull" value="VARCHAR"/>
+    </settings>  
+    
     <typeAliases>
-        <typeAlias alias="tourVO" type="totapi.domain.TourVO"/>
+        <typeAlias alias="tourDTO" type="totapi.domain.TourDTO"/>
         <typeAlias alias="basicTourDTO" type="totapi.domain.BasicTourDTO"/>
         <typeAlias alias="regionTourDTO" type="totapi.domain.RegionTourDTO"/>
         <typeAlias alias="tourShowDTO" type="totapi.domain.TourShowDTO"/>
@@ -13,6 +17,6 @@
     
     <mappers>
         <mapper resource="totapi/mapper/TourMapper.xml"/>
-    </mappers>  
+    </mappers>
     
 </configuration>

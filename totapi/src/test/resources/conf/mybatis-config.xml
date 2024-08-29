@@ -5,7 +5,7 @@
     <properties resource="props/db.properties" />
     
     <typeAliases>
-        <typeAlias alias="tourVO" type="totapi.domain.TourVO"/>
+        <typeAlias alias="tourDTO" type="totapi.domain.TourDTO"/>
     </typeAliases>
     
     <!-- Sql Mapper -->

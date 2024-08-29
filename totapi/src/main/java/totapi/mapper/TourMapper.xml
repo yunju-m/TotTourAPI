@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MyBatis Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="totapi.dao.TourDAO">
+
+    <insert id="insertTours" parameterType="list">
+	    INSERT INTO Tour (
+	        toid, areacode, tourtype, toname, toaddress, todetailaddress,
+	        totime, totel, tohomepage, tooverview, toimgpath, tox, toy
+	    )
+	    VALUES
+	    <foreach collection="list" item="item" separator=",">
+	        (
+	            #{item.toid}, #{item.areacode}, #{item.tourtype}, #{item.toname},
+	            #{item.toaddress}, #{item.todetailaddress}, #{item.totime},
+	            #{item.totel}, #{item.tohomepage}, #{item.tooverview},
+	            #{item.toimgpath}, #{item.tox}, #{item.toy}
+	        )
+	    </foreach>
+	</insert>
+
+</mapper>
