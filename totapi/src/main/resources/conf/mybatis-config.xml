@@ -2,13 +2,15 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD MyBatis Configuration 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     
-    <properties resource="WEB-INF/props/db.properties" />
+    <properties resource="props/db.properties" />
     
     <typeAliases>
-        <typeAlias alias="tourDTO" type="totapi.domain.TourDTO"/>
+        <typeAlias alias="tourVO" type="totapi.domain.TourVO"/>
+        <typeAlias alias="basicTourDTO" type="totapi.domain.BasicTourDTO"/>
+        <typeAlias alias="regionTourDTO" type="totapi.domain.RegionTourDTO"/>
+        <typeAlias alias="tourShowDTO" type="totapi.domain.TourShowDTO"/>
     </typeAliases>
     
-    <!-- Sql Mapper -->
     <mappers>
         <mapper resource="totapi/mapper/TourMapper.xml"/>
     </mappers>  
