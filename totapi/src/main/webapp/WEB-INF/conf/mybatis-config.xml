@@ -5,7 +5,10 @@
     <properties resource="/WEB-INF/props/db.properties" />
     
     <typeAliases>
-        <typeAlias alias="TourDTO" type="totapi.domain.TourDTO"/>
+        <typeAlias alias="TourVO" type="totapi.domain.TourVO"/>
+        <typeAlias alias="BasicTourDTO" type="totapi.domain.BasicTourDTO"/>
+        <typeAlias alias="RegionTourDTO" type="totapi.domain.RegionTourDTO"/>
+        <typeAlias alias="TourShowDTO" type="totapi.domain.TourShowDTO"/>
     </typeAliases>
     
     <mappers>
