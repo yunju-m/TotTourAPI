@@ -41,22 +41,22 @@ public class RegionTourDTO {
 	}
 	
 	@JsonCreator
-    public RegionTourDTO(@JsonProperty("contentid") String toid, @JsonProperty("areacode") String areacode,
-                         @JsonProperty("contenttypeid") String tourtype, @JsonProperty("title") String toname,
-                         @JsonProperty("addr1") String toaddress, @JsonProperty("addr2") String todetailaddress,
-                         @JsonProperty("tel") String totel, @JsonProperty("firstimage") String toimgpath,
-                         @JsonProperty("mapx") String tox, @JsonProperty("mapy") String toy) {
-        this.toid = toid;
-        this.areacode = areacode;
-        this.tourtype = tourtype;
-        this.toname = toname;
-        this.toaddress = toaddress;
-        this.todetailaddress = todetailaddress;
-        this.totel = totel;
-        this.toimgpath = toimgpath;
-        this.tox = tox;
-        this.toy = toy;
-    }
+	public RegionTourDTO(@JsonProperty("contentid") String toid, @JsonProperty("areacode") String areacode,
+			@JsonProperty("contenttypeid") String tourtype, @JsonProperty("title") String toname,
+			@JsonProperty("addr1") String toaddress, @JsonProperty("addr2") String todetailaddress,
+			@JsonProperty("tel") String totel, @JsonProperty("firstimage") String toimgpath,
+			@JsonProperty("mapx") String tox, @JsonProperty("mapy") String toy) {
+		this.toid = toid;
+		this.areacode = areacode;
+		this.tourtype = tourtype;
+		this.toname = toname;
+		this.toaddress = toaddress;
+		this.todetailaddress = todetailaddress;
+		this.totel = totel;
+		this.toimgpath = toimgpath;
+		this.tox = tox;
+		this.toy = toy;
+	}
 
 	public String getToid() {
 		return toid;

@@ -55,4 +55,5 @@ public class BasicTourDTO {
 	public String toString() {
 		return "BasicTourDTO [toid=" + toid + ", tohomepage=" + tohomepage + ", tooverview=" + tooverview + "]";
 	}
+	
 }

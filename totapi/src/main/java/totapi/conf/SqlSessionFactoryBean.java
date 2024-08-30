@@ -23,5 +23,5 @@ public class SqlSessionFactoryBean {
     public static SqlSession getSqlSessionInstance() {
         return sessionFactory.openSession();
     }
+    
 }
-
