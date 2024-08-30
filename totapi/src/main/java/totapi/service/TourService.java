@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,20 +26,23 @@ import totapi.domain.TourDTO;
 @Service
 public class TourService {
 
+	private static final Logger logger = LoggerFactory.getLogger(TourService.class);
+	private static final String BASE_URL = "http://apis.data.go.kr/B551011/KorService1";
+	private static final String SERVICE_KEY = "인증키";
+
 	@Autowired
 	private TourDAO tourDAO;
 
 	private final RestTemplate restTemplate = new RestTemplate();
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	private static final String BASE_URL = "http://apis.data.go.kr/B551011/KorService1";
-	private static final String SERVICE_KEY = "인증키";
+	public void getRegionTourData() {
 
-	public void getRegionTourData() throws IOException {
 		String regionTourUrl = BASE_URL + "/areaBasedList1?serviceKey=" + SERVICE_KEY
-				+ "&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A&contentTypeId=12";
+				+ "&numOfRows=999&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A&contentTypeId=12";
 
 		try {
+
 			List<RegionTourDTO> regionTours = fetchAndParseData(regionTourUrl,
 					new TypeReference<List<RegionTourDTO>>() {
 					});
@@ -65,20 +70,26 @@ public class TourService {
 				TourShowDTO tourShow = tourShows.isEmpty() ? null : tourShows.get(0);
 
 				tourDTOs = mergeData(regionTour, basicTour, tourShow);
-				System.out.println(tourDTOs);
+				logger.info("Inserting tour data: {}", tourDTOs);
+				tourDAO.insertTours(tourDTOs);
 
 			}
 
-			System.out.println("Data inserted successfully");
-
+			logger.info("Data inserted successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	private <T> List<T> fetchAndParseData(String url, TypeReference<List<T>> typeReference) throws IOException {
-		URI uri = URI.create(url);
-		String jsonResponse = restTemplate.getForObject(uri, String.class);
+		String jsonResponse = restTemplate.getForObject(URI.create(url), String.class);
+
+		if (jsonResponse != null && jsonResponse.trim().startsWith("<")) {
+			logger.error("Received HTML response instead of JSON: {}", jsonResponse);
+			throw new IOException("Received HTML response instead of JSON: " + jsonResponse);
+		}
+
 		JsonNode rootNode = objectMapper.readTree(jsonResponse);
 		JsonNode itemsNode = rootNode.path("response").path("body").path("items").path("item");
 
@@ -95,15 +106,15 @@ public class TourService {
 		tourDTO.setToname(regionTour.getToname());
 		tourDTO.setToaddress(regionTour.getToaddress());
 		tourDTO.setTodetailaddress(regionTour.getTodetailaddress());
-		tourDTO.setTotime(tourShow.getTotime());
-		tourDTO.setTohomepage(basicTour.getTohomepage());
-		tourDTO.setTooverview(basicTour.getTooverview());
+		tourDTO.setTotime(tourShow != null ? tourShow.getTotime() : null);
+		tourDTO.setTohomepage(basicTour != null ? basicTour.getTohomepage() : null);
+		tourDTO.setTooverview(basicTour != null ? basicTour.getTooverview() : null);
 		tourDTO.setTox(regionTour.getTox());
 		tourDTO.setToy(regionTour.getToy());
 		tourDTO.setToimgpath(regionTour.getToimgpath());
+
 		tourMap.put(tourDTO.getToid(), tourDTO);
 
 		return new ArrayList<>(tourMap.values());
 	}
-
 }
