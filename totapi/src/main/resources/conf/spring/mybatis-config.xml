@@ -16,7 +16,7 @@
     </typeAliases>
     
     <mappers>
-        <mapper resource="totapi/mapper/TourMapper.xml"/>
+        <mapper resource="conf/mapper/TourMapper.xml"/>
     </mappers>
     
 </configuration>
