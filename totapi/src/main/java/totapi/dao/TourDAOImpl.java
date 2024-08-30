@@ -16,11 +16,9 @@ public class TourDAOImpl implements TourDAO {
 
 	@Override
 	public void insertTours(List<TourDTO> tourDTOs) {
-		System.out.println("List size: " + tourDTOs.size());
-		
-//		if (tourDTOs != null && !tourDTOs.isEmpty()) {
-//			sqlSession.insert("totapi.dao.TourDAO.insertTours", tourDTOs);
-//		}
+		if (tourDTOs != null && !tourDTOs.isEmpty()) {
+			sqlSession.insert("totapi.dao.TourDAO.insertTours", tourDTOs);
+		}
 	}
 
 }

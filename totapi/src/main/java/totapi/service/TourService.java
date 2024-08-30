@@ -35,27 +35,39 @@ public class TourService {
 
 	public void getRegionTourData() throws IOException {
 		String regionTourUrl = BASE_URL + "/areaBasedList1?serviceKey=" + SERVICE_KEY
-				+ "&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A" + "&contentTypeId=12";
-
-		String basicTourUrl = BASE_URL + "/detailCommon1?serviceKey=" + SERVICE_KEY
-				+ "&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=126508"
-				+ "&contentTypeId=12&defaultYN=Y&overviewYN=Y";
-
-		String tourShowUrl = BASE_URL + "/detailIntro1?serviceKey=" + SERVICE_KEY
-				+ "&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=126508"
-				+ "&contentTypeId=12";
+				+ "&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&arrange=A&contentTypeId=12";
 
 		try {
 			List<RegionTourDTO> regionTours = fetchAndParseData(regionTourUrl,
 					new TypeReference<List<RegionTourDTO>>() {
 					});
-			List<BasicTourDTO> basicTours = fetchAndParseData(basicTourUrl, new TypeReference<List<BasicTourDTO>>() {
-			});
-			List<TourShowDTO> tourShows = fetchAndParseData(tourShowUrl, new TypeReference<List<TourShowDTO>>() {
-			});
 
-			List<TourDTO> tourDTOs = mergeData(regionTours, basicTours, tourShows);
-			tourDAO.insertTours(tourDTOs);
+			List<BasicTourDTO> basicTours = new ArrayList<>();
+			List<TourShowDTO> tourShows = new ArrayList<>();
+			List<TourDTO> tourDTOs = new ArrayList<>();
+
+			for (RegionTourDTO regionTour : regionTours) {
+				String contentId = regionTour.getToid();
+				String basicTourUrl = BASE_URL + "/detailCommon1?serviceKey=" + SERVICE_KEY
+						+ "&numOfRows=1&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json"
+						+ "&defaultYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&contentId=" + contentId;
+
+				String tourShowUrl = BASE_URL + "/detailIntro1?serviceKey=" + SERVICE_KEY
+						+ "&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&contentTypeId=12&contentId="
+						+ contentId;
+
+				basicTours = fetchAndParseData(basicTourUrl, new TypeReference<List<BasicTourDTO>>() {
+				});
+				tourShows = fetchAndParseData(tourShowUrl, new TypeReference<List<TourShowDTO>>() {
+				});
+
+				BasicTourDTO basicTour = basicTours.isEmpty() ? null : basicTours.get(0);
+				TourShowDTO tourShow = tourShows.isEmpty() ? null : tourShows.get(0);
+
+				tourDTOs = mergeData(regionTour, basicTour, tourShow);
+				System.out.println(tourDTOs);
+
+			}
 
 			System.out.println("Data inserted successfully");
 
@@ -73,38 +85,23 @@ public class TourService {
 		return objectMapper.convertValue(itemsNode, typeReference);
 	}
 
-	private List<TourDTO> mergeData(List<RegionTourDTO> regionTours, List<BasicTourDTO> basicTours,
-			List<TourShowDTO> tourShows) {
-		Map<Integer, TourDTO> tourMap = new HashMap<>();
+	private List<TourDTO> mergeData(RegionTourDTO regionTour, BasicTourDTO basicTour, TourShowDTO tourShow) {
+		Map<String, TourDTO> tourMap = new HashMap<>();
 
-		for (RegionTourDTO regionTour : regionTours) {
-			TourDTO tourDTO = new TourDTO();
-			tourDTO.setToid(Integer.parseInt(regionTour.getToid()));
-			tourDTO.setAreacode(regionTour.getAreacode());
-			tourDTO.setTourtype(regionTour.getTourtype());
-			tourDTO.setToname(regionTour.getToname());
-			tourDTO.setToaddress(regionTour.getToaddress());
-			tourDTO.setTodetailaddress(regionTour.getTodetailaddress());
-			tourDTO.setTox(regionTour.getTox());
-			tourDTO.setToy(regionTour.getToy());
-			tourDTO.setToimgpath(regionTour.getToimgpath());
-			tourMap.put(tourDTO.getToid(), tourDTO);
-		}
-
-		for (BasicTourDTO basicTour : basicTours) {
-			TourDTO tourDTO = tourMap.get(basicTour.getToid());
-			if (tourDTO != null) {
-				tourDTO.setTohomepage(basicTour.getTohomepage());
-				tourDTO.setTooverview(basicTour.getTooverview());
-			}
-		}
-
-		for (TourShowDTO tourShow : tourShows) {
-			TourDTO tourDTO = tourMap.get(tourShow.getToid());
-			if (tourDTO != null) {
-				tourDTO.setTotime(tourShow.getTotime());
-			}
-		}
+		TourDTO tourDTO = new TourDTO();
+		tourDTO.setToid(regionTour.getToid());
+		tourDTO.setAreacode(regionTour.getAreacode());
+		tourDTO.setTourtype(regionTour.getTourtype());
+		tourDTO.setToname(regionTour.getToname());
+		tourDTO.setToaddress(regionTour.getToaddress());
+		tourDTO.setTodetailaddress(regionTour.getTodetailaddress());
+		tourDTO.setTotime(tourShow.getTotime());
+		tourDTO.setTohomepage(basicTour.getTohomepage());
+		tourDTO.setTooverview(basicTour.getTooverview());
+		tourDTO.setTox(regionTour.getTox());
+		tourDTO.setToy(regionTour.getToy());
+		tourDTO.setToimgpath(regionTour.getToimgpath());
+		tourMap.put(tourDTO.getToid(), tourDTO);
 
 		return new ArrayList<>(tourMap.values());
 	}
